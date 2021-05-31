@@ -13,10 +13,7 @@ import java.io.File
 
 class PdfPicker {
 
-    var uri: Uri? = null
-    var path: String? = null
-    var fileName: String? = null
-    var tempFile: File? = null
+    val filesList: ArrayList<FileObject> = ArrayList()
 
     val permissionRequired = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -55,6 +52,7 @@ class PdfPicker {
                 type = "application/pdf"
                 action = Intent.ACTION_OPEN_DOCUMENT
                 addCategory(Intent.CATEGORY_OPENABLE)
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 flags = flags or Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
 

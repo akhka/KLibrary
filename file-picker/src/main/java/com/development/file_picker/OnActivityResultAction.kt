@@ -23,7 +23,7 @@ object OnActivityResultAction {
         if (resultCode== AppCompatActivity.RESULT_OK && data.data!=null){
             when(requestCode){
                 PICK_PDF_REQUEST -> {
-                    data.data!!.let {
+                    /*data.data!!.let {
                         pdfPicker.uri = it
                         context.contentResolver.openInputStream(it)?.use { inputStream ->
                             val name = getFileName(context, it)
@@ -35,7 +35,46 @@ object OnActivityResultAction {
                             pdfPicker.path = filePath
                             pdfPicker.tempFile = tempFile
                         }
+                    }*/
+
+                    if (null != data.clipData){
+                        for (i in 0 until data.clipData!!.itemCount){
+                            val uri = data.clipData!!.getItemAt(i).uri
+                            val fileObject = FileObject()
+                            fileObject.uri = uri
+                            context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                                val name = getFileName(context, uri)
+                                fileObject.fileName = name
+                                val tempFile = createTempFile(context, name.split(".")[0], "pdf")
+                                copyStreamToFile(inputStream, tempFile)
+
+                                val filePath = tempFile.absolutePath
+                                fileObject.path = filePath
+                                fileObject.tempFile = tempFile
+                            }
+
+                            pdfPicker.filesList.add(fileObject)
+                        }
                     }
+                    else{
+                        data.data!!.let {
+                            val fileObject = FileObject()
+                            fileObject.uri = it
+                            context.contentResolver.openInputStream(it)?.use { inputStream ->
+                                val name = getFileName(context, it)
+                                fileObject.fileName = name
+                                val tempFile = createTempFile(context, name.split(".")[0], "pdf")
+                                copyStreamToFile(inputStream, tempFile)
+
+                                val filePath = tempFile.absolutePath
+                                fileObject.path = filePath
+                                fileObject.tempFile = tempFile
+                            }
+
+                            pdfPicker.filesList.add(fileObject)
+                        }
+                    }
+
                 }
                 PICK_IMAGE_REQUEST -> {
                     /*data.data!!.let {
