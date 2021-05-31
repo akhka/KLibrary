@@ -52,7 +52,6 @@ class PdfPicker {
                 type = "application/pdf"
                 action = Intent.ACTION_OPEN_DOCUMENT
                 addCategory(Intent.CATEGORY_OPENABLE)
-                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 flags = flags or Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
 

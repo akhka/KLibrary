@@ -37,42 +37,20 @@ object OnActivityResultAction {
                         }
                     }*/
 
-                    if (null != data.clipData){
-                        for (i in 0 until data.clipData!!.itemCount){
-                            val uri = data.clipData!!.getItemAt(i).uri
-                            val fileObject = FileObject()
-                            fileObject.uri = uri
-                            context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                                val name = getFileName(context, uri)
-                                fileObject.fileName = name
-                                val tempFile = createTempFile(context, name.split(".")[0], "pdf")
-                                copyStreamToFile(inputStream, tempFile)
+                    data.data!!.let {
+                        val fileObject = FileObject()
+                        fileObject.uri = it
+                        context.contentResolver.openInputStream(it)?.use { inputStream ->
+                            val name = getFileName(context, it)
+                            fileObject.fileName = name
+                            val tempFile = createTempFile(context, name.split(".")[0], "pdf")
+                            copyStreamToFile(inputStream, tempFile)
 
-                                val filePath = tempFile.absolutePath
-                                fileObject.path = filePath
-                                fileObject.tempFile = tempFile
-                            }
-
-                            pdfPicker.filesList.add(fileObject)
+                            val filePath = tempFile.absolutePath
+                            fileObject.path = filePath
+                            fileObject.tempFile = tempFile
                         }
-                    }
-                    else{
-                        data.data!!.let {
-                            val fileObject = FileObject()
-                            fileObject.uri = it
-                            context.contentResolver.openInputStream(it)?.use { inputStream ->
-                                val name = getFileName(context, it)
-                                fileObject.fileName = name
-                                val tempFile = createTempFile(context, name.split(".")[0], "pdf")
-                                copyStreamToFile(inputStream, tempFile)
-
-                                val filePath = tempFile.absolutePath
-                                fileObject.path = filePath
-                                fileObject.tempFile = tempFile
-                            }
-
-                            pdfPicker.filesList.add(fileObject)
-                        }
+                        pdfPicker.filesList.add(fileObject)
                     }
 
                 }
